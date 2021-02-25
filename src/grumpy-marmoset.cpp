@@ -1,3 +1,5 @@
+// Copyright 2021 The Knights of Ni
+
 #include <iostream>
 
 int
