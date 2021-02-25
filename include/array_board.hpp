@@ -15,6 +15,12 @@ class ArrayBoard {
     ArrayBoard(const ArrayBoard &) = default;
     ArrayBoard &operator=(const ArrayBoard &ab) = default;
 
+    // Returns the piece at a given square.
+    Piece operator[](Square sq) const;
+
+    // Returns the piece at a given integer casted square.
+    Piece operator[](int sq) const;
+
  private:
     Piece _board[kBoardSize];
 };

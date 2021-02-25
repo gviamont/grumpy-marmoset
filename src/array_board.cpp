@@ -29,6 +29,20 @@ ArrayBoard::ArrayBoard() {
         _board[to_underlying(Square::kA2) + i] = Piece::kWhitePawn;
         _board[to_underlying(Square::kA7) + i] = Piece::kBlackPawn;
     }
+
+    for (int i = 0; i < 32; ++i) {
+        _board[to_underlying(Square::kA3) + i] = Piece::kEmpty;
+    }
+}
+
+Piece
+ArrayBoard::operator[](Square sq) const {
+    return _board[to_underlying(sq)];
+}
+
+Piece
+ArrayBoard::operator[](int sq) const {
+    return _board[sq];
 }
 
 }  // namespace grumpy_marmoset
