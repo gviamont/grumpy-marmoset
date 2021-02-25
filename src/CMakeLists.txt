@@ -1,3 +1,5 @@
-add_executable(grumpy-marmoset grumpy-marmoset.cpp)
+# Copyright 2021 The Knights of Ni
 
-target_include_directories(grumpy-marmoset PUBLIC $PROJECT_SOURCE_DIR/include)
+add_executable(grumpy-marmoset grumpy-marmoset.cpp array_board.cpp)
+
+target_include_directories(grumpy-marmoset PUBLIC ${PROJECT_SOURCE_DIR}/include)
