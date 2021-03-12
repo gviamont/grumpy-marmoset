@@ -1,0 +1,31 @@
+def main():
+    inputfile = open("PGNFile2.txt", "r")
+    if inputfile.mode == 'r':  # check to make sure that the file was opened
+        lines = inputfile.readlines() # use the readlines() function to read one line at a time
+        gameNum = 1 #game counter
+        print("\nGame Number:", gameNum)
+        moves = "" #initialize moves string
+        addMoves = False #initialize addMoves bool which is used as a switch to signal when we can record moves
+        for line in lines:
+            if line[0:1] == "[": #new game detected when we find first open [
+                if addMoves == True: #after recording moves, need to flip the switch and print moves
+                    addMoves = False #Flip switch now that we are in a new game
+                    print("Moves:", moves)
+                    moves = "" #empty moves string for next game
+                    gameNum += 1
+                    print("\nGame number", gameNum)
+                key_Value = line[1:-2] # grab info between brackets
+                key = key_Value.split()[0] #assign 1st word to key
+                valueIndex = key_Value.find("\"") #find first " position
+                value = key_Value[valueIndex+1:-1] #grab value info between "s and store to value
+                print("{}: {}".format(key, value))
+            elif line[0:2] == "1.": #when we come across a 1. we know to start recording moves
+                addMoves = True #flip switch on to record moves
+            if addMoves == True: #if the switch is on then append lines to moves string
+                moves += str(line.rstrip()) #Append the moves together into a single string, removing trailing newlines
+        print("Moves:", moves) #print the moves from the last game after exiting the for loop
+
+    inputfile.close() # close the file when done
+
+if __name__ == "__main__":
+    main()
