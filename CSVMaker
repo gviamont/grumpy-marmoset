@@ -1,0 +1,65 @@
+import csv
+import gamesList
+
+gamesList = gamesList.gamesList("KasparovFirst10Pages.pgn")
+
+def main():
+    with open('PGNGames.csv', 'w', newline='') as f:
+        fieldNames = ['Event',
+                      'Site',
+                      'Date',
+                      'Round',
+                      'White',
+                      'Black',
+                      'Result',
+                      'ECO',
+                      'WhiteElo',
+                      'BlackElo',
+                      'PlyCount',
+                      'WhiteTitle',
+                      'BlackTitle',
+                      'Opening',
+                      'WhiteFideId',
+                      'BlackFideId',
+                      'EventDate',
+                      'Variation',
+                      'EventType',
+                      'EventRounds',
+                      'EventCountry',
+                      'Source',
+                      'SourceDate',
+                      'Moves'
+                      ]
+        theWriter = csv.DictWriter(f, fieldnames=fieldNames)
+
+        theWriter.writeheader()
+        for s in gamesList:
+            theWriter.writerow({'Event' : s[0]['Event'],
+                          'Site' : s[0]['Site'],
+                          'Date' : s[0]['Date'],
+                          'Round' : s[0]['Round'],
+                          'White' : s[0]['White'],
+                          'Black' : s[0]['Black'],
+                          'Result': s[0]['Result'],
+                          'ECO' : s[0]['ECO'],
+                          ## Getting errors starting here...
+                          # 'WhiteElo' : s[0]['WhiteElo'], 
+                          # 'BlackElo' : s[0]['BlackElo'],
+                          # 'PlyCount' : s[0]['PlyCount'],
+                          # 'WhiteTitle' : s[0]['WhiteTitle'],
+                          # 'BlackTitle' : s[0]['BlackTitle'],
+                          # 'Opening' : s[0]['Opening'],
+                          # 'WhiteFideId' : s[0]['WhiteFideId'],
+                          # 'BlackFideId' : s[0]['BlackFideId'],
+                          # 'EventDate' : s[0]['EventDate'],
+                          # 'Variation' : s[0]['Variation'],
+                          # 'EventType' : s[0]['EventType'],
+                          # 'EventRounds' : s[0]['EventRounds'],
+                          # 'EventCountry' : s[0]['EventCountry'],
+                          # 'Source' : s[0]['Source'],
+                          # 'SourceDate' : s[0]['SourceDate'],
+                          'Moves' : s[1]
+                                })
+
+if __name__ == "__main__":
+    main()
