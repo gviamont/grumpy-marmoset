@@ -1,19 +1,73 @@
-def main():
-    inputfile = open("PGNFile2.txt", "r")
+def gamesList(fileName):
+    fileName = fileName
+    inputfile = open(fileName, "r")
     if inputfile.mode == 'r':  # check to make sure that the file was opened
         lines = inputfile.readlines() # use the readlines() function to read one line at a time
         gameNum = 1 #game counter
         moves = "" #initialize moves string
         addMoves = False #initialize addMoves bool which is used as a switch to signal when we can record moves
-        headerMap = {} # creating a dictionary of keyValues in the header
         gamesList = [] # creating a list of tuples consisting of ({headerMap}, moves)
+        # Initialize the headerMap with all fields so it can be converted to a flat file
+        headerMap = {
+            'Event': '',
+            'Site': '',
+            'Date': '',
+            'Round': '',
+            'White': '',
+            'Black': '',
+            'Result': '',
+            'ECO': '',
+            'WhiteElo': '',
+            'BlackElo': '',
+            'PlyCount': '',
+            'WhiteTitle': '',
+            'BlackTitle': '',
+            'Opening': '',
+            'WhiteFideId': '',
+            'BlackFideId': '',
+            'EventDate': '',
+            'Variation': '',
+            'EventType': '',
+            'EventRounds': '',
+            'EventCountry': '',
+            'Source': '',
+            'SourceDate': '',
+            'Moves': ''
+        }
+
         for line in lines:
             if line[0:1] == "[": #new game detected when we find first open [
                 if addMoves: #after recording moves, need to flip the switch and print moves
                     addMoves = False #Flip switch now that we are in a new game
                     gameInfo = (headerMap, moves) # creating a tuple for each game
                     gamesList.append(gameInfo) #adding the gameInfo from this game to a list of games
-                    headerMap = {} #reset the headerMap for next game
+                    #reset the headerMap for next game
+                    headerMap = {
+                        'Event': '',
+                        'Site': '',
+                        'Date': '',
+                        'Round': '',
+                        'White': '',
+                        'Black': '',
+                        'Result': '',
+                        'ECO': '',
+                        'WhiteElo': '',
+                        'BlackElo': '',
+                        'PlyCount': '',
+                        'WhiteTitle': '',
+                        'BlackTitle': '',
+                        'Opening': '',
+                        'WhiteFideId': '',
+                        'BlackFideId': '',
+                        'EventDate': '',
+                        'Variation': '',
+                        'EventType': '',
+                        'EventRounds': '',
+                        'EventCountry': '',
+                        'Source': '',
+                        'SourceDate': '',
+                        'Moves': ''
+                    }
                     moves = "" #empty moves string for next game
                     gameNum += 1
                 keyValue = line[1:-2] # grab info between brackets
@@ -27,9 +81,15 @@ def main():
                 moves += str(line.rstrip()) #Append the moves together into a single string, removing trailing newlines
         gameInfo = (headerMap, moves) #last game
         gamesList.append(gameInfo) #last game
-        # print(gamesList)
-        # print(gamesList[24])
+
+        return gamesList
+
     inputfile.close() # close the file when done
+
+def main():
+    thisGame = gamesList("KasparovFirst10Pages.pgn")
+    for s in thisGame:
+        print(s)
 
 if __name__ == "__main__":
     main()
