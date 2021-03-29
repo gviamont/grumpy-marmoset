@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 import csv
+import sys
 
-# Tags soured from http://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm#c9.9.2
+# This list of tags can be updated when running into new tags in pgn files
+# Most of these tags sourced from http://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm#c9.9.2
 fieldNames = [
     'Event',
     'Site',
@@ -52,26 +54,26 @@ fieldNames = [
     'WhiteTeamCountry',
     'BlackTeamCountry',
     'Remark',
-    'EventCategory'
+    'EventCategory',
+    'Moves'
 ]
 
+# Initialize the GameMap with empty data in order to populate the csv with null data
+# when values are not included for each key in the pgn file, which is usually the case
 def initializeGameMap():
     gamesListMap = {}
     for f in fieldNames:
         gamesListMap[f] = ''
     return gamesListMap
 
-def main():
+if __name__ == "__main__":
     import gamesList
-    whichFile = input("Which PGN file do you want to run?\n")
-    gamesList = gamesList.gamesList(whichFile)
+    pgnFileName = sys.argv[1]
+    gamesList = gamesList.gamesList(pgnFileName)
     with open('PGNGames.csv', 'w', newline='') as f:
         theWriter = csv.DictWriter(f, fieldnames=fieldNames)
         theWriter.writeheader()
         for s in gamesList:
-            theWriter.writerow(s[0])
+            theWriter.writerow(s)
     print("Success")
-
-if __name__ == "__main__":
-    main()
 
