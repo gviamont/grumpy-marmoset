@@ -1,5 +1,7 @@
 import CSVMaker
 
+# https://spin.atomicobj ect.com/2016/04/19/vim-commands-cheat-sheet/
+
 # This function uses readlines() to read in one line at a time then builds
 # a map of data from each game and returns a list of all games and associated
 # pgn header info (aka tags) plus moves.
@@ -48,8 +50,8 @@ def gamesList(fileName):
             if addMoves:
                 moves += str(line.rstrip())
         # Last game info
-        gameInfo = headerMap
-        gamesList.append(gameInfo)
+        headerMap["Moves"] = moves
+        gamesList.append(headerMap)
 
         return gamesList
 
