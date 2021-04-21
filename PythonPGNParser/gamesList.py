@@ -8,6 +8,8 @@ import CSVMaker
 def gamesList(fileName):
     fileName = fileName
     inputfile = open(fileName, "r")
+    ## Think about adding maybe another gamesList function to call a full directory
+    ## rather than just taking a single file
 
     # use the readlines() function to read one line at a time
     if inputfile.mode == 'r':
@@ -18,6 +20,7 @@ def gamesList(fileName):
         # Initialize the headerMap with all fields so it can be converted to a flat file
         gamesList = []
         moves = ''
+
         addMoves = False
         headerMap = CSVMaker.initializeGameMap()
 
@@ -29,7 +32,7 @@ def gamesList(fileName):
                 # Record moves and append all data to gamesList, then empty moves string and reinitialize GameMap
                 if addMoves:
                     addMoves = False
-                    headerMap["Moves"] = moves
+                    headerMap["Moves_"] = moves
                     gamesList.append(headerMap)
                     moves = ''
                     headerMap = CSVMaker.initializeGameMap()
@@ -50,12 +53,42 @@ def gamesList(fileName):
             if addMoves:
                 moves += str(line.rstrip())
         # Last game info
-        headerMap["Moves"] = moves
+        headerMap["Moves_"] = moves
         gamesList.append(headerMap)
 
         return gamesList
 
     inputfile.close()
+
+# Logic is in gamesList(). This function is called when a directory is passed in rather than a single file.
+# Functions in bigPGNMaker.py are called to copy all lines from all files into a single list called allLines
+def gamesListDir(allLines):
+    lines = allLines
+    gamesList = []
+    moves = ''
+    addMoves = False
+    headerMap = CSVMaker.initializeGameMap()
+    for line in lines:
+        if line[0:1] == "[":
+            if addMoves:
+                addMoves = False
+                headerMap["Moves_"] = moves
+                gamesList.append(headerMap)
+                moves = ''
+                headerMap = CSVMaker.initializeGameMap()
+            keyValue = line[1:-2]
+            key = keyValue.split()[0]
+            valueIndex = keyValue.find("\"")
+            value = keyValue[valueIndex+1:-1]
+            headerMap[key] = value
+        elif line[0:2] == "1.":
+            addMoves = True
+        if addMoves:
+            moves += str(line.rstrip())
+    headerMap["Moves_"] = moves
+    gamesList.append(headerMap)
+
+    return gamesList
 
 if __name__ == "__main__":
     # pgnFileName = sys.argv[1]
