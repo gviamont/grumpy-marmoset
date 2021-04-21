@@ -8,8 +8,6 @@ import CSVMaker
 def gamesList(fileName):
     fileName = fileName
     inputfile = open(fileName, "r")
-    ## Think about adding maybe another gamesList function to call a full directory
-    ## rather than just taking a single file
 
     # use the readlines() function to read one line at a time
     if inputfile.mode == 'r':
@@ -60,7 +58,7 @@ def gamesList(fileName):
 
     inputfile.close()
 
-# Logic is in gamesList(). This function is called when a directory is passed in rather than a single file.
+# Logic explanations in gamesList(). This function is called when a directory is passed in rather than a single file.
 # Functions in bigPGNMaker.py are called to copy all lines from all files into a single list called allLines
 def gamesListDir(allLines):
     lines = allLines

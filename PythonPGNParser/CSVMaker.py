@@ -69,6 +69,7 @@ def initializeGameMap():
         gamesListMap[f] = ''
     return gamesListMap
 
+# Creates a csv file from a single pgn file
 def fileCSVMaker(pgnFileName):
     fileGamesList = gamesList.gamesList(pgnFileName)
     with open('singlePGNfile.csv', 'w', newline='') as f:
@@ -76,36 +77,31 @@ def fileCSVMaker(pgnFileName):
         theWriter.writeheader()
         for s in fileGamesList:
             theWriter.writerow(s)
-    print("fileCSVMaker Success")
+    print("Successfully created singlePGNfile.csv from file %s"%pgnFileName)
 
+# Creates a csv file from a directory w/ lots of files
 def dirCSVMaker(pgnDirName):
-    listOfFiles = bigPGNMaker.filesList(pgnDirName)
-    allLines = bigPGNMaker.appendFiles(listOfFiles, pgnDirName)
+    listOfFiles = bigPGNMaker.filesListWithSubDirs(pgnDirName)
+    allLines = bigPGNMaker.appendFiles(listOfFiles)
     bigGamesList = gamesList.gamesListDir(allLines)
-
     with open('dirPGNGames.csv', 'w', newline='') as foo:
         theWriter = csv.DictWriter(foo, fieldnames=fieldNames)
         theWriter.writeheader()
         for b in bigGamesList:
             theWriter.writerow(b)
-    print("dirCSVMaker Success")
-
+    print("Successfully created dirPGNGames.csv from dir %s"%pgnDirName)
 
 if __name__ == "__main__":
-    # if len(sys.argv) != 2: # In case the commandline filename entered incorrectly
-    #     print("usage: CSVMaker.py <pgn filename or pgn file directory>")
-    #     sys.exit(1) # Normally returns 0 for success
+    if len(sys.argv) != 2: # In case the commandline filename entered incorrectly
+        print("usage: CSVMaker.py <pgn filename or pgn file directory>")
+        sys.exit(1) # Normally returns 0 for success
 
-    ## Add logic here to check if file or directory, if file do what is here. If not call new function gamesListDir.
-    # fileType 0 = file, 1 = directory
-    fileType = 0
-
-    if fileType == 0:
-        # pgnFileName = sys.argv[1]
-        pgnFileName = "k1.pgn"
-        fileCSVMaker(pgnFileName)
-
-    elif fileType == 1:
-        # pgnDirName = sys.argv[1]
-        pgnDirName = '/Users/mattmcclain/Desktop/pgnfiles/'
-        dirCSVMaker(pgnDirName)
+    # Added logic here to check if entry is a file or directory
+    if len(sys.argv) == 2:
+        cmndEntry = sys.argv[1]
+        if cmndEntry[0:1] == "/":
+            pgnDirName = cmndEntry
+            dirCSVMaker(pgnDirName)
+        else:
+            pgnFileName = cmndEntry
+            fileCSVMaker(pgnFileName)
