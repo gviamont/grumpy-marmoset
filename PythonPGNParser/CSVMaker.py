@@ -70,9 +70,9 @@ def initializeGameMap():
     return gamesListMap
 
 # Creates a csv file from a single pgn file
-def fileCSVMaker(pgnFileName):
+def fileCSVMaker(pgnFileName, outputLoc):
     fileGamesList = gamesList.gamesList(pgnFileName)
-    with open('singlePGNfile.csv', 'w', newline='') as f:
+    with open(outputLoc + 'singlePGNfile.csv', 'w', newline='') as f:
         theWriter = csv.DictWriter(f, fieldnames=fieldNames)
         theWriter.writeheader()
         for s in fileGamesList:
@@ -80,11 +80,11 @@ def fileCSVMaker(pgnFileName):
     print("Successfully created singlePGNfile.csv from file %s"%pgnFileName)
 
 # Creates a csv file from a directory w/ lots of files
-def dirCSVMaker(pgnDirName):
+def dirCSVMaker(pgnDirName, outputLoc):
     listOfFiles = bigPGNMaker.filesListWithSubDirs(pgnDirName)
     allLines = bigPGNMaker.appendFiles(listOfFiles)
     bigGamesList = gamesList.gamesListDir(allLines)
-    with open('dirPGNGames.csv', 'w', newline='') as foo:
+    with open(outputLoc + 'dirPGNGames.csv', 'w', newline='') as foo:
         theWriter = csv.DictWriter(foo, fieldnames=fieldNames)
         theWriter.writeheader()
         for b in bigGamesList:
@@ -92,16 +92,17 @@ def dirCSVMaker(pgnDirName):
     print("Successfully created dirPGNGames.csv from dir %s"%pgnDirName)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2: # In case the commandline filename entered incorrectly
-        print("usage: CSVMaker.py <pgn filename or pgn file directory>")
+    if len(sys.argv) != 3: # In case the commandline filename entered incorrectly
+        print("usage: CSVMaker.py <pgn filename or pgn file directory> <file output location>")
         sys.exit(1) # Normally returns 0 for success
 
     # Added logic here to check if entry is a file or directory
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 3:
         cmndEntry = sys.argv[1]
+        outputLoc = sys.argv[2]
         if cmndEntry[0:1] == "/":
             pgnDirName = cmndEntry
-            dirCSVMaker(pgnDirName)
+            dirCSVMaker(pgnDirName, outputLoc)
         else:
             pgnFileName = cmndEntry
-            fileCSVMaker(pgnFileName)
+            fileCSVMaker(pgnFileName, outputLoc)
