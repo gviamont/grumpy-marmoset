@@ -4,6 +4,7 @@ import csv
 import sys
 import gamesList
 import bigPGNMaker
+import os
 
 # This list of tags can be updated when running into new tags in pgn files
 # Most of these tags sourced from http://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm#c9.9.2
@@ -96,13 +97,16 @@ if __name__ == "__main__":
         print("usage: CSVMaker.py <pgn filename or pgn file directory> <file output location>")
         sys.exit(1) # Normally returns 0 for success
 
-    # Added logic here to check if entry is a file or directory
+    # Added logic here to check if entry in argv[1] is a file or directory
+    # Also added command line input for output location in argv[2]
     if len(sys.argv) == 3:
         cmndEntry = sys.argv[1]
         outputLoc = sys.argv[2]
-        if cmndEntry[0:1] == "/":
-            pgnDirName = cmndEntry
-            dirCSVMaker(pgnDirName, outputLoc)
-        else:
+        isFile = os.path.isfile(cmndEntry)
+        if isFile:
             pgnFileName = cmndEntry
             fileCSVMaker(pgnFileName, outputLoc)
+        else:
+            pgnDirName = cmndEntry
+            dirCSVMaker(pgnDirName, outputLoc)
+
