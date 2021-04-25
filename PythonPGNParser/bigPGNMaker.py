@@ -21,19 +21,13 @@ def appendFiles(listOfFiles):
         inputfile.close()
     return eachLine
 
-# pgnToList takes a single file and uses the readlines() function to read one line at a time into a list
+
+# pgnToList takes a single file and uses the readlines() function to
+# read one line at a time into a list
 def pgnLineList(fileName):
+    eachLine = []
     inputfile = open(fileName, "r")
     if inputfile.mode == 'r':
-        lines = inputfile.readlines()
+        eachLine = inputfile.readlines()
     inputfile.close()
-    return lines
-
-if __name__ == '__main__':
-    dirName = '/Users/mattmcclain/Desktop/newpgnfiles/'
-    listOfFiles = filesListWithSubDirs(dirName)
-    print(listOfFiles)
-    allLines = appendFiles(listOfFiles, dirName)
-    print(lines)
-    bigGamesList = gamesList.gamesListDir(allLines)
-    print(bigGamesList)
+    return eachLine

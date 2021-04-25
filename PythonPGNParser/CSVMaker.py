@@ -70,29 +70,15 @@ def initializeGameMap():
         gamesListMap[f] = ''
     return gamesListMap
 
-# Creates a csv file from a single pgn file
-def fileCSVMaker(pgnFileName, outputLoc):
-    # fileGamesList = gamesList.gamesList(pgnFileName)
-    pgnLineList = bigPGNMaker.pgnLineList(pgnFileName)
-    bigGamesList = gamesList.gamesListDir(pgnLineList)
-    with open(outputLoc + 'singlePGNfile.csv', 'w', newline='') as f:
+# Creates a csv file from the parsed list output from gamesList
+def CSVMaker(allLines, outputLoc):
+    bigGamesList = gamesList.gamesList(allLines)
+    with open(outputLoc + 'bigPGN.csv', 'w', newline='') as f:
         theWriter = csv.DictWriter(f, fieldnames=fieldNames)
         theWriter.writeheader()
         for s in bigGamesList:
             theWriter.writerow(s)
-    print("Successfully created singlePGNfile.csv from file %s"%pgnFileName)
-
-# Creates a csv file from a directory w/ lots of files
-def dirCSVMaker(pgnDirName, outputLoc):
-    listOfFiles = bigPGNMaker.filesListWithSubDirs(pgnDirName)
-    allLines = bigPGNMaker.appendFiles(listOfFiles)
-    bigGamesList = gamesList.gamesListDir(allLines)
-    with open(outputLoc + 'dirPGNGames.csv', 'w', newline='') as foo:
-        theWriter = csv.DictWriter(foo, fieldnames=fieldNames)
-        theWriter.writeheader()
-        for b in bigGamesList:
-            theWriter.writerow(b)
-    print("Successfully created dirPGNGames.csv from dir %s"%pgnDirName)
+    print("Successfully created CSV file")
 
 if __name__ == "__main__":
     if len(sys.argv) != 3: # In case the commandline filename entered incorrectly
@@ -101,14 +87,17 @@ if __name__ == "__main__":
 
     # Added logic here to check if entry in argv[1] is a file or directory
     # Also added command line input for output location in argv[2]
-    if len(sys.argv) == 3:
+    elif len(sys.argv) == 3:
         cmndEntry = sys.argv[1]
         outputLoc = sys.argv[2]
         isFile = os.path.isfile(cmndEntry)
         if isFile:
             pgnFileName = cmndEntry
-            fileCSVMaker(pgnFileName, outputLoc)
+            allLines = bigPGNMaker.pgnLineList(pgnFileName)
+            CSVMaker(allLines, outputLoc)
         else:
             pgnDirName = cmndEntry
-            dirCSVMaker(pgnDirName, outputLoc)
+            listOfFiles = bigPGNMaker.filesListWithSubDirs(pgnDirName)
+            allLines = bigPGNMaker.appendFiles(listOfFiles)
+            CSVMaker(allLines, outputLoc)
 
