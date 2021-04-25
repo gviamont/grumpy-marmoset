@@ -21,6 +21,14 @@ def appendFiles(listOfFiles):
         inputfile.close()
     return eachLine
 
+# pgnToList takes a single file and uses the readlines() function to read one line at a time into a list
+def pgnLineList(fileName):
+    inputfile = open(fileName, "r")
+    if inputfile.mode == 'r':
+        lines = inputfile.readlines()
+    inputfile.close()
+    return lines
+
 if __name__ == '__main__':
     dirName = '/Users/mattmcclain/Desktop/newpgnfiles/'
     listOfFiles = filesListWithSubDirs(dirName)

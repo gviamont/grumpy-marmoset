@@ -72,11 +72,13 @@ def initializeGameMap():
 
 # Creates a csv file from a single pgn file
 def fileCSVMaker(pgnFileName, outputLoc):
-    fileGamesList = gamesList.gamesList(pgnFileName)
+    # fileGamesList = gamesList.gamesList(pgnFileName)
+    pgnLineList = bigPGNMaker.pgnLineList(pgnFileName)
+    bigGamesList = gamesList.gamesListDir(pgnLineList)
     with open(outputLoc + 'singlePGNfile.csv', 'w', newline='') as f:
         theWriter = csv.DictWriter(f, fieldnames=fieldNames)
         theWriter.writeheader()
-        for s in fileGamesList:
+        for s in bigGamesList:
             theWriter.writerow(s)
     print("Successfully created singlePGNfile.csv from file %s"%pgnFileName)
 
