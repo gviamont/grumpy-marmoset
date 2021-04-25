@@ -2,17 +2,17 @@ import glob
 
 # Takes a directory path as an input and returns list of all pgn filenames
 # in that directory and subdirectories
-def filesListWithSubDirs(dirName):
-    filesInSubDirectories = []
+def dirFilesList(dirName):
+    allFiles = []
     allFilePaths = glob.glob(dirName + "/**/*.pgn", recursive=True)
     for t in allFilePaths:
-        filesInSubDirectories.append(t)
-    return filesInSubDirectories
+        allFiles.append(t)
+    return allFiles
 
 
-# appendFiles takes the list of files from filesListWithSubDirs() and creates
+# Takes the list of files from dirFilesList() and creates
 # one new list of all lines from all files, like one big pgn file but in a list
-def appendFiles(listOfFiles):
+def dirLineList(listOfFiles):
     eachLine = []
     for eachFile in listOfFiles:
         inputfile = open(eachFile, "r")

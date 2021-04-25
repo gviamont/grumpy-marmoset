@@ -97,7 +97,7 @@ if __name__ == "__main__":
             CSVMaker(allLines, outputLoc)
         else:
             pgnDirName = cmndEntry
-            listOfFiles = bigPGNMaker.filesListWithSubDirs(pgnDirName)
-            allLines = bigPGNMaker.appendFiles(listOfFiles)
+            listOfFiles = bigPGNMaker.dirFilesList(pgnDirName)
+            allLines = bigPGNMaker.dirLineList(listOfFiles)
             CSVMaker(allLines, outputLoc)
 
