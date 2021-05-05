@@ -4,12 +4,6 @@ from configparser import ConfigParser
 
 # This code crawls through a masters pages and downloads the pgns a page at a time
 
-## How do I force the downloads into a specific folder?
-    # May be able to access the download folder via driver object.
-    # Look into config file and then use one command line argument to add drivers, max pages, etc
-    # Maybe use json structure for the config, python may have a python method already
-    # Use dictionary - driverString :'/Users/mattmcclain/Downloads/chromedriver4'
-    # Or settings class that returns settings object w/ members
 ## Update the range to include how many pages that master has from HowManyPages.py. Great candidate for config file.
 ## Update the url as an input from URLs returned in URLConverter
 
@@ -34,11 +28,11 @@ def downloadPGNs(masterURL, howManyPages):
     for pageNum in range(1, howManyPages+1):
         url = masterURL + str(pageNum)
         driver.get(url)
-        time.sleep(4)
-        driver.find_element_by_class_name("master-games-check-all").click()
         time.sleep(2)
+        driver.find_element_by_class_name("master-games-check-all").click()
+        # time.sleep(2)
         driver.find_element_by_class_name("master-games-download-button").click()
-        time.sleep(4)
+        # time.sleep(4)
 
 if __name__ == "__main__":
     masterURL = "https://www.chess.com/games/search?fromSearchShort=1&p1=Garry%20Kasparov&page="

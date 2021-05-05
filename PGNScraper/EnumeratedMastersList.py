@@ -4,14 +4,11 @@ from configparser import ConfigParser
 import HowManyPages
 
 # This code opens the JSON file and creates a dictionary named 'data'
-# Extra code is to spit out an enumerated list of all the masters for debugging
+# Extra code is to print enumerated list of all the masters for debugging
 
-## Maybe convert this into a function that simply returns the dictionary from the JSON file
-## Maybe call HowManyPages.py function to add number of pages to each dictionary.
-## Best way to add multiple values to a dictionary?
-## mastersList = {"master" : [URL, numOfPages]} or maybe
-## mastersList = {"master" : (URL, numOfPages)}
-## May be a good reason to build this out with a class
+## May be interesting to build this out with a class instead of a dictionary
+## Specify the config file on the command line
+## Specify the json file location on the command line
 
 file = 'config.ini'
 config = ConfigParser()
@@ -38,18 +35,20 @@ def addHowManyPages(data, key, numOfPages):
     return data
 
 if __name__ == "__main__":
-    data = getMasterURLs()
-    dataWithPages = {}
+    data = getMasterURLs() #creates dictionary object with only Masters & URLs
+    dataWithPages = {} #this will be new dictionary object that also includes pageNum
     for key in data:
         master = key
         url = data[key]
         pages = HowManyPages.howManyPages(url, min, max)
-        newValueList = [url, pages]
-        dataWithPages.setdefault(master, [])
-        for newValue in newValueList:
-            dataWithPages[master].append(newValue)
+        newValueList = (url, pages)
+        # dataWithPages.setdefault(master, []) # wasn't able to figure out how to create tuple value pair instead of list value pair
+        dataWithPages[master] = newValueList
+        # for newValue in newValueList:
+        #     dataWithPages[master].append(newValue)
         print(master, pages)
 
+    # This prints the results in a nice to view format
     for index, key in enumerate(dataWithPages):
         print(index, key, dataWithPages[key])
 

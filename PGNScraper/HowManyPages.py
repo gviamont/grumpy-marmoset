@@ -1,14 +1,9 @@
 from selenium import webdriver
-import time
 from configparser import ConfigParser
 
-# This code will run through all masters pages until the page returns the 'text' below and
-# calls out that there are no more games.
-# The first page that returns this is called pageNum, so the function howManyPages returns total page numbers
-# ie Kasparov has games on pages 1 - 97, so howManyPages returns 97 because pageNum = 98
-# Players who have no data will return 0 because page 1 will show the following text
-
-## Wait until last operation is done before moving on instead of 1 sec
+# This code performs a divide and conquer algorithm to load masters pages until the 'no games' text
+# appears on the page. The first page that displays the text is labeled pageNum.
+# e.g. as of this writing Kasparov has 96 pages of game results so his pageNum is 97
 
 file = 'config.ini'
 config = ConfigParser()
@@ -18,11 +13,10 @@ driver = webdriver.Chrome(chromedriver)
 min = int(config['howmanypages']['min'])
 max = int(config['howmanypages']['max'])
 
-def runIt(masterURL, pageNum, min, max):
+def getPageNum(masterURL, pageNum, min, max):
     text = "Your search did not match any games. Please try a new search."
     url = masterURL + str(pageNum)
     driver.get(url)
-    time.sleep(1)
     if driver.page_source.__contains__(text):
         return min, pageNum # If no games on page then we are too high, same min, lower max
     else:
@@ -32,7 +26,7 @@ def runIt(masterURL, pageNum, min, max):
 def howManyPages(masterURL,min,max):
     num = (min + max) // 2
     while max - min != 1:
-        min, max = runIt(masterURL, num, min, max)
+        min, max = getPageNum(masterURL, num, min, max)
         num = (min + max) // 2
         print(min, max)
     return max
