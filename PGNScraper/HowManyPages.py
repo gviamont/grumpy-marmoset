@@ -8,6 +8,7 @@ from configparser import ConfigParser
 file = 'config.ini'
 config = ConfigParser()
 config.read(file)
+
 chromedriver = config['getpgns']['chromedriver']
 driver = webdriver.Chrome(chromedriver)
 min = int(config['howmanypages']['min'])

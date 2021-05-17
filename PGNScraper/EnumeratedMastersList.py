@@ -31,7 +31,7 @@ def addHowManyPages(data, key, numOfPages):
     if key not in data:
         print("Master not in the list")
     else:
-        data[key].extend(numOfPages)
+        data[key].extend(numOfPages) #I think append might be the more appropriate choice here
     return data
 
 if __name__ == "__main__":
