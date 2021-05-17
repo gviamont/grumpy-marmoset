@@ -35,7 +35,7 @@ def addHowManyPages(data, key, numOfPages):
     return data
 
 if __name__ == "__main__":
-    data = getMasterURLs() #creates dictionary object with only Masters & URLs
+    data = getMasterURLs() #creates dictionary object with updated URLs
     dataWithPages = {} #this will be new dictionary object that also includes pageNum
     for key in data:
         master = key

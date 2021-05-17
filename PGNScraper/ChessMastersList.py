@@ -26,7 +26,10 @@ def createMastersList(url):
         getHREF = match.h2.a.get('href')
         getGames1 = str.rstrip(match.div.text)
         getGames = str.lstrip(getGames1)
-        urlAndGames = (getHREF, getGames)
+        spaceLoc = getGames.index(" ")
+        justTheGameNum = getGames[:spaceLoc]
+        justTheGameNum = int(justTheGameNum.replace(',', ''))
+        urlAndGames = (getHREF, justTheGameNum)
         mastersList[getName] = urlAndGames
         count += 1
     return count
