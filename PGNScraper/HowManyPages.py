@@ -6,15 +6,31 @@ import json
 # appears on the page. The first page that displays the text is labeled pageNum.
 # e.g. as of this writing Kasparov has 96 pages of game results so his pageNum is 97
 
+# Config
 file = 'config.ini'
 config = ConfigParser()
 config.read(file)
-chromedriver = config['drivers']['chromedriver']
-driver = webdriver.Chrome(chromedriver)
+chromeDriver = config['drivers']['chromeDriver']
+driver = webdriver.Chrome(chromeDriver)
 min = int(config['howmanypages']['min'])
 max = int(config['howmanypages']['max'])
 mastersListStage2 = config['jsons']['mastersListStage2']
 mastersListStage3 = config['jsons']['mastersListStage3']
+
+# Create and configure logger
+logger =  logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s')
+
+file_handler = logging.FileHandler('HowManyPages.log')
+file_handler.setFormatter(formatter)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
+logger.addHandler(stream_handler)
 
 # Creates a new dictionary object that adds # of pages.
 def howManyPages():
@@ -29,7 +45,7 @@ def howManyPages():
         pages = divideAndConquer(url, min, max)
         newValueList = [url, games, pages]
         dataWithPages[master] = newValueList
-        print(master, games, pages)
+        logger.info(master, games, pages)
     return dataWithPages
 
 
@@ -61,4 +77,4 @@ if __name__ == "__main__":
 
     # This prints the results in a nice to view format
     for index, key in enumerate(data):
-        print(index, key, data[key][0], data[key][1], data[key][2])
+        logger.info(index, key, data[key][0], data[key][1], data[key][2])

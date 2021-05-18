@@ -3,7 +3,7 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 import requests
 import json
-
+import logging
 
 # This code goes through Pages 1-33 of all chess masters and grabs the Names, # of games, and URLs for each master
 # and adds them to a dictionary called mastersList then dumps this data into a json file
@@ -13,12 +13,29 @@ import json
 file = 'config.ini'
 config = ConfigParser()
 config.read(file)
-chromedriver = config['drivers']['chromedriver']
+chromeDriver = config['drivers']['chromeDriver']
 mastersListStage1 = config['jsons']['mastersListStage1']
 urlOGs = config['urls']['urlOGs']
 urlWithPages = config['urls']['urlWithPages']
-driver = webdriver.Chrome(chromedriver)
+driver = webdriver.Chrome(chromeDriver)
 
+# Create and configure logger
+logger =  logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s')
+
+file_handler = logging.FileHandler('ChessMastersList.log')
+file_handler.setFormatter(formatter)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
+logger.addHandler(stream_handler)
+
+
+# Go to url and grab (and cleanse) name, url, and number of games, create dictionary object
 def createMastersList(url):
     count = 0
     driver.get(url)
@@ -36,7 +53,7 @@ def createMastersList(url):
         urlAndGames = [getHREF, justTheGameNum]
         mastersList[getName] = urlAndGames
         count += 1
-    return count
+    return count # this count is how many masters per page, so when count is 0 we know to stop
 
 
 if __name__ == "__main__":
@@ -48,7 +65,9 @@ if __name__ == "__main__":
         count = createMastersList(url)
         if count == 0: # Once a page with no masters exists then break out of the loop
             break
-    print(mastersList)
+    logger.info("Successfully gathered all masters")
+    logger.info(mastersList)
+
     a_file = open(mastersListStage1, "w")
     json.dump(mastersList, a_file)
     a_file.close()

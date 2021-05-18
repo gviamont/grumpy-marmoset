@@ -9,17 +9,35 @@ import json
 ## Research url encoding/decoding
 ## Add error logging
 
+# Config
 file = 'config.ini'
 config = ConfigParser()
 config.read(file)
-chromedriver = config['drivers']['chromedriver']
-driver = webdriver.Chrome(chromedriver)
+chromeDriver = config['drivers']['chromeDriver']
+driver = webdriver.Chrome(chromeDriver)
 mastersListStage1 = config['jsons']['mastersListStage1']
 mastersListStage2 = config['jsons']['mastersListStage2']
 
+# Create and configure logger
+logger =  logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s')
+
+file_handler = logging.FileHandler('URLConverter.log')
+file_handler.setFormatter(formatter)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
+logger.addHandler(stream_handler)
+
+# Weak sauce encoding
 URLStart = "https://www.chess.com/games/search?fromSearchShort=1&p1="
 sep = "%20"
 URLEnd = "&page="
+
 
 def getUpdatedURLs():
     # Opens the mastersListStage1.json file and loads it into a dictionary called 'data'
@@ -35,7 +53,7 @@ def getUpdatedURLs():
         newURL = data[key][0]
         driver.get(newURL)
         if driver.page_source.__contains__(text) and data[key][1] != 0:
-            print("This URL is not working:", newURL, "Old:", oldURL) # Add a logging statement here or maybe a new function to testURLs
+            logger.info("This URL is not working:", newURL, "Old:", oldURL)
     return data
 
 def URLConverter(oldURL):
@@ -80,10 +98,8 @@ def URLConverter(oldURL):
         newURL = URLStart + splitName[0] + sep + splitName [1] + URLEnd
     elif nameLen == 3:
         newURL = URLStart + splitName[0] + sep + splitName[1] + sep + splitName[2] + URLEnd
-    elif nameLen == 4:
+    else nameLen == 4:
         newURL = URLStart + splitName[0] + sep + splitName[1] + sep + splitName[2] + sep + splitName[3] + URLEnd
-    else:
-        print("At lease one in the list has too many forking names")
     return newURL
 
 if __name__ == "__main__":
@@ -93,8 +109,8 @@ if __name__ == "__main__":
     json.dump(data, a_file)
     a_file.close()
 
-    print("Success")
+    logger.info("Success")
 
     # This prints the results in a nice to view format
     # for index, key in enumerate(data):
-    #     print(index, key, data[key][0],data[key][1])
+    #     logger.info(index, key, data[key][0],data[key][1])
