@@ -1,6 +1,7 @@
+from configparser import ConfigParser
 from selenium import webdriver
 import time
-from configparser import ConfigParser
+import json
 
 # This code crawls through a masters pages and downloads the pgns a page at a time
 
@@ -12,7 +13,8 @@ file = 'config.ini'
 config = ConfigParser()
 config.read(file)
 outputDir = config['getpgns']['outputDir']
-chromedriver = config['getpgns']['chromedriver']
+chromedriver = config['drivers']['chromedriver']
+mastersListStage3 = config['jsons']['mastersListStage3']
 
 # Loads the chromedriver location then updates the Chrome download output directory
 chromeOptions = webdriver.ChromeOptions()
@@ -25,7 +27,7 @@ driver = webdriver.Chrome(executable_path=chromedriver, options=chromeOptions)
 # Takes each masterURL and 'how many pages' each has then visits each page, checks the check-all box
 # then downloads them into the directory in the config.ini
 def downloadPGNs(masterURL, howManyPages):
-    for pageNum in range(1, howManyPages+1):
+    for pageNum in range(1, howManyPages):
         url = masterURL + str(pageNum)
         driver.get(url)
         time.sleep(2)
@@ -35,6 +37,14 @@ def downloadPGNs(masterURL, howManyPages):
         # time.sleep(4)
 
 if __name__ == "__main__":
-    masterURL = "https://www.chess.com/games/search?fromSearchShort=1&p1=Garry%20Kasparov&page="
-    howManyPages = 2
-    downloadPGNs(masterURL, howManyPages)
+    with open(mastersListStage3, "r") as json_file:
+        data = json.load(json_file)
+
+    # print(len(data)) # Number of Masters
+
+    for key in data:
+        masterURL = data[key][0]
+        print(masterURL)
+        howManyPages = data[key][2]
+        print(howManyPages)
+        downloadPGNs(masterURL, howManyPages)

@@ -1,10 +1,11 @@
+from configparser import ConfigParser
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import requests
 import json
-from configparser import ConfigParser
 
-# This code goes through Pages 1-33 of all chess masters and grabs the Names and HREFs for each master
+
+# This code goes through Pages 1-33 of all chess masters and grabs the Names, # of games, and URLs for each master
 # and adds them to a dictionary called mastersList then dumps this data into a json file
 # Example: <a class="post-preview-title" href="https://www.chess.com/games/adolf-anderssen">Adolf Anderssen</a>
 
@@ -12,7 +13,10 @@ from configparser import ConfigParser
 file = 'config.ini'
 config = ConfigParser()
 config.read(file)
-chromedriver = config['getpgns']['chromedriver']
+chromedriver = config['drivers']['chromedriver']
+mastersListStage1 = config['jsons']['mastersListStage1']
+urlOGs = config['urls']['urlOGs']
+urlWithPages = config['urls']['urlWithPages']
 driver = webdriver.Chrome(chromedriver)
 
 def createMastersList(url):
@@ -29,7 +33,7 @@ def createMastersList(url):
         spaceLoc = getGames.index(" ")
         justTheGameNum = getGames[:spaceLoc]
         justTheGameNum = int(justTheGameNum.replace(',', ''))
-        urlAndGames = (getHREF, justTheGameNum)
+        urlAndGames = [getHREF, justTheGameNum]
         mastersList[getName] = urlAndGames
         count += 1
     return count
@@ -37,15 +41,14 @@ def createMastersList(url):
 
 if __name__ == "__main__":
     mastersList = {}
-    urlAndGames = ()
-    url = "https://www.chess.com/games"
-    createMastersList(url)
+    urlAndGames = []
+    createMastersList(urlOGs)
     for pageNum in range(1, 99):
-        url = "https://www.chess.com/games?page={}".format(pageNum)
+        url = urlWithPages.format(pageNum)
         count = createMastersList(url)
         if count == 0: # Once a page with no masters exists then break out of the loop
             break
     print(mastersList)
-    a_file = open("/Users/mattmcclain/Desktop/mastersList.json", "w")
+    a_file = open(mastersListStage1, "w")
     json.dump(mastersList, a_file)
     a_file.close()
