@@ -1,7 +1,9 @@
 from configparser import ConfigParser
+import logging
 from selenium import webdriver
 import time
 import json
+
 
 # This code crawls through a masters pages and downloads the pgns a page at a time
 
@@ -36,26 +38,41 @@ stream_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.addHandler(stream_handler)
 
-# Takes each masterURL and 'how many pages' each has then visits each page, checks the check-all box
+text = "Your search did not match any games. Please try a new search."
+
+# Takes each masterURL and then visits each page, checks the check-all box
 # then downloads them into the directory in the config.ini
-def downloadPGNs(masterURL, howManyPages):
-    for pageNum in range(1, howManyPages):
+def downloadAllPGNs(masterURL):
+    for pageNum in range(1, 999):
         url = masterURL + str(pageNum)
         driver.get(url)
         time.sleep(2)
-        driver.find_element_by_class_name("master-games-check-all").click()
-        # time.sleep(2)
-        driver.find_element_by_class_name("master-games-download-button").click()
-        # time.sleep(4)
+        if driver.page_source.__contains__(text):
+            break
+        else:
+            driver.find_element_by_class_name("master-games-check-all").click()
+            driver.find_element_by_class_name("master-games-download-button").click()
 
 if __name__ == "__main__":
-    with open(mastersListStage3, "r") as json_file:
-        data = json.load(json_file)
-
-    logger.info("Total number of Masters is", len(data)) # Number of Masters
-
-    for key in data:
-        masterURL = data[key][0]
-        howManyPages = data[key][2]
-        logger.info(key, howManyPages)
-        downloadPGNs(masterURL, howManyPages)
+    masterURL = "https://www.chess.com/games/search?fromSearchShort=1&p1=alexander%20mcdonnell&page="
+    downloadAllPGNs(masterURL)
+    #
+    # with open(mastersListStage3, "r") as json_file:
+    #     data = json.load(json_file)
+    # logger.info("json file loaded")
+    # logger.info(data)
+    #
+    # numOfMasters = len(data)
+    # print("Total number of Masters is", numOfMasters)
+    # logger.info("Total number of Masters is", numOfMasters) # Number of Masters
+    #
+    # x = 0
+    # for key in data:
+    #     if x < 1:
+    #         masterURL = data[key][0]
+    #         howManyPages = data[key][2]
+    #         logger.info(key, howManyPages)
+    #         downloadAllPGNs(masterURL, howManyPages)
+    #         x += 1
+    #     else:
+    #         break

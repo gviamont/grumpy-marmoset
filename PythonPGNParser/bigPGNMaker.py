@@ -1,4 +1,21 @@
 import glob
+import logging
+
+# Create and configure logger
+logger =  logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s')
+
+file_handler = logging.FileHandler('bigPGNMaker.log')
+file_handler.setFormatter(formatter)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
+logger.addHandler(stream_handler)
+
 
 # Takes a directory path as an input and returns list of all pgn filenames
 # in that directory and subdirectories

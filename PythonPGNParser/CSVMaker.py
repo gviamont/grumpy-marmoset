@@ -5,9 +5,29 @@ import sys
 import gamesList
 import bigPGNMaker
 import os
+import logging
+
+# Create and configure logger
+logger =  logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s')
+
+file_handler = logging.FileHandler('CSVMaker.log')
+file_handler.setFormatter(formatter)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
+logger.addHandler(stream_handler)
 
 # This list of tags can be updated when running into new tags in pgn files
 # Most of these tags sourced from http://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm#c9.9.2
+
+# ./CSVMaker.py <input file location> <output file location>, be sure to add / at end of output
+# ./CSVMaker.py <input directory location> <output file location>
+
 fieldNames = [
     'Event',
     'Site',
@@ -58,6 +78,8 @@ fieldNames = [
     'BlackTeamCountry',
     'Remark',
     'EventCategory',
+    'WhiteClock',
+    'BlackClock',
     'Source_', # This is our convention to add special keys to the map
     'Moves_'
 ]
@@ -73,16 +95,16 @@ def initializeGameMap():
 # Creates a csv file from the parsed list output from gamesList
 def CSVMaker(allLines, outputLoc):
     bigGamesList = gamesList.gamesList(allLines)
-    with open(outputLoc + 'bigPGN.csv', 'w', newline='') as f:
+    with open(outputLoc, 'w', newline='') as f:
         theWriter = csv.DictWriter(f, fieldnames=fieldNames)
         theWriter.writeheader()
         for s in bigGamesList:
             theWriter.writerow(s)
-    print("Successfully created CSV file")
+    logger.info("Successfully created CSV file")
 
 if __name__ == "__main__":
     if len(sys.argv) != 3: # In case the commandline filename entered incorrectly
-        print("usage: CSVMaker.py <pgn filename or pgn file directory> <file output location>")
+        logger.info("usage: CSVMaker.py <pgn filename or pgn file directory> <file output location>")
         sys.exit(1) # Normally returns 0 for success
 
     # Added logic here to check if entry in argv[1] is a file or directory
@@ -94,10 +116,12 @@ if __name__ == "__main__":
         if isFile:
             pgnFileName = cmndEntry
             allLines = bigPGNMaker.pgnLineList(pgnFileName)
+            logger.info("File input")
             CSVMaker(allLines, outputLoc)
         else:
             pgnDirName = cmndEntry
             listOfFiles = bigPGNMaker.dirFilesList(pgnDirName)
             allLines = bigPGNMaker.dirLineList(listOfFiles)
+            logger.info("Directory input")
             CSVMaker(allLines, outputLoc)
 

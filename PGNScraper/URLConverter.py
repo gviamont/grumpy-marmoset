@@ -1,4 +1,5 @@
 from configparser import ConfigParser
+import logging
 from selenium import webdriver
 import json
 
@@ -54,11 +55,15 @@ def getUpdatedURLs():
         driver.get(newURL)
         if driver.page_source.__contains__(text) and data[key][1] != 0:
             logger.info("This URL is not working:", newURL, "Old:", oldURL)
+
+    a_file = open(mastersListStage2, "w")
+    json.dump(data, a_file)
+    a_file.close()
+    logger.info("Success")
+
     return data
 
 def URLConverter(oldURL):
-    # oldURL = "https://www.chess.com/games/david-anton-guijarro"
-
     name = oldURL[28:]
     splitName = name.split('-')
     nameLen = len(splitName)
@@ -98,18 +103,14 @@ def URLConverter(oldURL):
         newURL = URLStart + splitName[0] + sep + splitName [1] + URLEnd
     elif nameLen == 3:
         newURL = URLStart + splitName[0] + sep + splitName[1] + sep + splitName[2] + URLEnd
-    else nameLen == 4:
+    elif nameLen == 4:
         newURL = URLStart + splitName[0] + sep + splitName[1] + sep + splitName[2] + sep + splitName[3] + URLEnd
     return newURL
 
 if __name__ == "__main__":
-    data = getUpdatedURLs()  # creates dictionary object with updated URLs
+    getUpdatedURLs()  # creates dictionary object with updated URLs
 
-    a_file = open(mastersListStage2, "w")
-    json.dump(data, a_file)
-    a_file.close()
 
-    logger.info("Success")
 
     # This prints the results in a nice to view format
     # for index, key in enumerate(data):

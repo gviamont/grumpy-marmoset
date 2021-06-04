@@ -1,9 +1,10 @@
 from configparser import ConfigParser
+import logging
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import requests
 import json
-import logging
+
 
 # This code goes through Pages 1-33 of all chess masters and grabs the Names, # of games, and URLs for each master
 # and adds them to a dictionary called mastersList then dumps this data into a json file
@@ -34,9 +35,11 @@ stream_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.addHandler(stream_handler)
 
+mastersList = {}
+urlAndGames = []
 
 # Go to url and grab (and cleanse) name, url, and number of games, create dictionary object
-def createMastersList(url):
+def gatherMastersData(url):
     count = 0
     driver.get(url)
     source = requests.get(url).text
@@ -48,21 +51,18 @@ def createMastersList(url):
         getGames1 = str.rstrip(match.div.text)
         getGames = str.lstrip(getGames1)
         spaceLoc = getGames.index(" ")
-        justTheGameNum = getGames[:spaceLoc]
-        justTheGameNum = int(justTheGameNum.replace(',', ''))
-        urlAndGames = [getHREF, justTheGameNum]
+        numOfGames = getGames[:spaceLoc]
+        numOfGames = int(numOfGames.replace(',', ''))
+        urlAndGames = [getHREF, numOfGames]
         mastersList[getName] = urlAndGames
         count += 1
     return count # this count is how many masters per page, so when count is 0 we know to stop
 
-
-if __name__ == "__main__":
-    mastersList = {}
-    urlAndGames = []
-    createMastersList(urlOGs)
+def createMastersList():
+    gatherMastersData(urlOGs)
     for pageNum in range(1, 99):
         url = urlWithPages.format(pageNum)
-        count = createMastersList(url)
+        count = gatherMastersData(url)
         if count == 0: # Once a page with no masters exists then break out of the loop
             break
     logger.info("Successfully gathered all masters")
@@ -71,3 +71,6 @@ if __name__ == "__main__":
     a_file = open(mastersListStage1, "w")
     json.dump(mastersList, a_file)
     a_file.close()
+
+if __name__ == "__main__":
+    createMastersList()
